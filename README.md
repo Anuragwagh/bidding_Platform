@@ -1,5 +1,3 @@
-# Bidding_Platform
-
 # Real-Time Bidding Platform
 
 This project is a comprehensive RESTful API for a real-time bidding platform built using Node.js, Express, Socket.io, and PostgreSQL. The API supports advanced CRUD operations, user authentication, role-based access control, real-time bidding, and notifications.
@@ -9,14 +7,12 @@ This project is a comprehensive RESTful API for a real-time bidding platform bui
 - [Features](#features)
 - [Requirements](#requirements)
 - [Setup](#setup)
-  - [Environment Setup](#environment-setup)
   - [Database Setup](#database-setup)
   - [Run the Server](#run-the-server)
 - [Database Schema](#database-schema)
 - [API Endpoints](#api-endpoints)
 - [WebSocket Events](#websocket-events)
 - [Usage](#usage)
-- [Testing](#testing)
 - [Bonus](#bonus)
 - [Deliverables](#deliverables)
 
@@ -37,7 +33,69 @@ This project is a comprehensive RESTful API for a real-time bidding platform bui
 
 ## Setup
 
-### Environment Setup
+### Database Setup
+
+1. **Create the PostgreSQL database:**
+
+    ```sql
+    CREATE DATABASE bidding_platform;
+    ```
+
+2. **Create the necessary tables:**
+
+    Save the following SQL script in a file named `schema.sql`:
+
+    ```sql
+    -- schema.sql
+
+    -- users table
+    CREATE TABLE users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password VARCHAR(100) NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        role VARCHAR(10) DEFAULT 'user',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- items table
+    CREATE TABLE items (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        description TEXT NOT NULL,
+        starting_price DECIMAL(10, 2) NOT NULL,
+        current_price DECIMAL(10, 2) DEFAULT NULL,
+        image_url VARCHAR(255) NULL,
+        end_time TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- bids table
+    CREATE TABLE bids (
+        id SERIAL PRIMARY KEY,
+        item_id INTEGER REFERENCES items(id),
+        user_id INTEGER REFERENCES users(id),
+        bid_amount DECIMAL(10, 2) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- notifications table
+    CREATE TABLE notifications (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        message VARCHAR(255) NOT NULL,
+        is_read BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+    ```
+
+3. **Apply the database schema:**
+
+    ```bash
+    psql -U your_db_user -d bidding_platform -f schema.sql
+    ```
+
+### Run the Server
 
 1. **Clone the repository:**
 
@@ -120,77 +178,13 @@ This project is a comprehensive RESTful API for a real-time bidding platform bui
     });
     ```
 
-### Database Setup
-
-1. **Create the PostgreSQL database:**
-
-    ```sql
-    CREATE DATABASE bidding_platform;
-    ```
-
-2. **Create the necessary tables:**
-
-    Save the following SQL script in a file named `schema.sql`:
-
-    ```sql
-    -- schema.sql
-
-    -- users table
-    CREATE TABLE users (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
-        password VARCHAR(100) NOT NULL,
-        email VARCHAR(100) UNIQUE NOT NULL,
-        role VARCHAR(10) DEFAULT 'user',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-
-    -- items table
-    CREATE TABLE items (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        description TEXT NOT NULL,
-        starting_price DECIMAL(10, 2) NOT NULL,
-        current_price DECIMAL(10, 2) DEFAULT NULL,
-        image_url VARCHAR(255) NULL,
-        end_time TIMESTAMP NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-
-    -- bids table
-    CREATE TABLE bids (
-        id SERIAL PRIMARY KEY,
-        item_id INTEGER REFERENCES items(id),
-        user_id INTEGER REFERENCES users(id),
-        bid_amount DECIMAL(10, 2) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-
-    -- notifications table
-    CREATE TABLE notifications (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
-        message VARCHAR(255) NOT NULL,
-        is_read BOOLEAN DEFAULT FALSE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-    ```
-
-3. **Apply the database schema:**
-
-    ```bash
-    psql -U your_db_user -d bidding_platform -f schema.sql
-    ```
-
-### Run the Server
-
-1. **Start the server:**
+5. **Start the server:**
 
     ```bash
     npm start
     ```
 
-2. **Open your browser and navigate to `http://localhost:3000` to see the "Hello, World!" message.**
+6. **Open your browser and navigate to `http://localhost:3000` to see the "Hello, World!" message.**
 
 ## Database Schema
 
@@ -296,10 +290,6 @@ This project is a comprehensive RESTful API for a real-time bidding platform bui
 - **Pagination:**
   - Implement pagination for the `GET /items` endpoint.
 
-## Testing
-
-- **Add unit and integration tests for the API using a testing framework like Mocha, Chai, or Jest.**
-
 ## Bonus
 
 - **Implement a rate limiting middleware to prevent abuse of the API.**
@@ -313,4 +303,3 @@ This project is a comprehensive RESTful API for a real-time bidding platform bui
 - **Source code hosted on a Git repository (e.g., GitHub).**
 - **README file with setup and usage instructions.**
 - **SQL scripts or migrations for setting up the database schema.**
-- **Tests covering the main functionality.**
