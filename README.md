@@ -289,17 +289,3 @@ This project is a comprehensive RESTful API for a real-time bidding platform bui
 
 - **Pagination:**
   - Implement pagination for the `GET /items` endpoint.
-
-## Bonus
-
-- **Implement a rate limiting middleware to prevent abuse of the API.**
-- **Use a linter like ESLint to ensure code quality.**
-- **Implement logging for API requests and errors.**
-- **Add a feature for users to reset their passwords.**
-- **Use Docker for containerization.**
-
-## Deliverables
-
-- **Source code hosted on a Git repository (e.g., GitHub).**
-- **README file with setup and usage instructions.**
-- **SQL scripts or migrations for setting up the database schema.**
